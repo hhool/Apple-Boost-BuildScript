@@ -924,6 +924,7 @@ buildBoost_iOS()
         --stagedir=iphone-build/stage \
         --prefix="$IOS_OUTPUT_DIR/prefix" \
         toolset="darwin-$COMPILER_VERSION~iphone" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         stage >> "${IOS_OUTPUT_DIR}/ios-build.log" 2>&1 \
@@ -934,6 +935,7 @@ buildBoost_iOS()
         --stagedir=iphone-build/stage \
         --prefix="$IOS_OUTPUT_DIR/prefix" \
         toolset="darwin-$COMPILER_VERSION~iphone" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         install >> "${IOS_OUTPUT_DIR}/ios-build.log" 2>&1 \
@@ -945,6 +947,7 @@ buildBoost_iOS()
         --build-dir=iphonesim-build \
         --stagedir=iphonesim-build/stage \
         toolset="darwin-$COMPILER_VERSION~iphonesim" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         stage >> "${IOS_OUTPUT_DIR}/ios-build.log" 2>&1 \
@@ -963,6 +966,7 @@ buildBoost_tvOS()
         --stagedir=appletv-build/stage \
         --prefix="$TVOS_OUTPUT_DIR/prefix" \
         toolset="darwin-$COMPILER_VERSION~appletv" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         stage >> "${TVOS_OUTPUT_DIR}/tvos-build.log" 2>&1 \
@@ -973,6 +977,7 @@ buildBoost_tvOS()
         --stagedir=appletv-build/stage \
         --prefix="$TVOS_OUTPUT_DIR/prefix" \
         toolset="darwin-$COMPILER_VERSION~appletv" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         install >> "${TVOS_OUTPUT_DIR}/tvos-build.log" 2>&1 \
@@ -985,6 +990,7 @@ buildBoost_tvOS()
         --stagedir=appletvsim-build/stage \
         --prefix="$TVOS_OUTPUT_DIR/prefix" \
         toolset="darwin-$COMPILER_VERSION~appletvsim" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         stage >> "${TVOS_OUTPUT_DIR}/tvos-build.log" 2>&1 \
@@ -1003,6 +1009,7 @@ buildBoost_macOS()
         --stagedir=macos-build/stage \
         --prefix="$MACOS_OUTPUT_DIR/prefix" \
         toolset="darwin-$COMPILER_VERSION~macos" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         stage >> "${MACOS_OUTPUT_DIR}/macos-build.log" 2>&1 \
@@ -1013,6 +1020,7 @@ buildBoost_macOS()
         --stagedir=macos-build/stage \
         --prefix="$MACOS_OUTPUT_DIR/prefix" \
         toolset="darwin-$COMPILER_VERSION~macos" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         install >> "${MACOS_OUTPUT_DIR}/macos-build.log" 2>&1 \
@@ -1032,6 +1040,7 @@ buildBoost_macOS_silicon()
         --stagedir=macos-silicon-build/stage \
         --prefix="$MACOS_SILICON_OUTPUT_DIR/prefix" \
         toolset="darwin-$COMPILER_VERSION~macossilicon" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         stage >> "${MACOS_SILICON_OUTPUT_DIR}/macos-silicon-build.log" 2>&1 \
@@ -1042,6 +1051,7 @@ buildBoost_macOS_silicon()
         --stagedir=macos-silicon-build/stage \
         --prefix="$MACOS_SILICON_OUTPUT_DIR/prefix" \
         toolset="darwin-$COMPILER_VERSION~macossilicon" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         install >> "${MACOS_SILICON_OUTPUT_DIR}/macos-silicon-build.log" 2>&1 \
@@ -1060,6 +1070,7 @@ buildBoost_mac_catalyst()
         --stagedir=mac-catalyst-build/stage \
         --prefix="$MAC_CATALYST_OUTPUT_DIR/prefix" \
         toolset="darwin-$COMPILER_VERSION~maccatalyst" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         stage >> "${MAC_CATALYST_OUTPUT_DIR}/mac-catalyst-build.log" 2>&1 \
@@ -1070,6 +1081,7 @@ buildBoost_mac_catalyst()
         --stagedir=mac-catalyst-build/stage \
         --prefix="$MAC_CATALYST_OUTPUT_DIR/prefix" \
         toolset="darwin-$COMPILER_VERSION~maccatalyst" \
+        cxxstd=11 \
         link=static \
         variant=${BUILD_VARIANT} \
         install >> "${MAC_CATALYST_OUTPUT_DIR}/mac-catalyst-build.log" 2>&1 \
@@ -1838,15 +1850,16 @@ if [[ -n $BUILD_MAC_CATALYST ]]; then
     buildBoost_mac_catalyst
 fi
 
-scrunchAllLibsTogetherInOneLibPerPlatform
-if [[ -n $UNIVERSAL ]]; then
-    buildUniversal
-fi
+if [ "$(arch)" == "i386" ]; then
+    scrunchAllLibsTogetherInOneLibPerPlatform
+    if [[ -n $UNIVERSAL ]]; then
+        buildUniversal
+    fi
 
-if [[ -z $NO_FRAMEWORK ]]; then
-    DIST_DIR="$CURRENT_DIR/dist"
-    mkdir -p "$DIST_DIR"
-    buildXCFramework "$DIST_DIR"
+    if [[ -z $NO_FRAMEWORK ]]; then
+        DIST_DIR="$CURRENT_DIR/dist"
+        mkdir -p "$DIST_DIR"
+        buildXCFramework "$DIST_DIR"
+    fi
 fi
-
 echo "Completed successfully"
